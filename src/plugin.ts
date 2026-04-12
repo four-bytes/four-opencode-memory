@@ -210,4 +210,4 @@ export const FourMemPlugin: Plugin = async (ctx) => {
   };
 };
 
-export default { server: FourMemPlugin };
+export default { id: "four-mem", server: FourMemPlugin };

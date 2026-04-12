@@ -1,4 +1,4 @@
-import { existsSync, readFileSync, mkdirSync } from "node:fs";
+import { existsSync, readFileSync, mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { homedir } from "node:os";
 
@@ -37,6 +37,37 @@ const DEFAULTS: FourMemConfig = {
   },
   showToasts: true,
 };
+
+const SEED_MEMORY = `\
+<!-- id:seed0001 date:${new Date().toISOString().slice(0, 10)} type:preference tags:identity,setup -->
+## AI Assistant Identity
+
+You are a coding assistant with persistent memory. You remember decisions, patterns, and
+preferences across sessions. When you learn something important, store it using the memory tool.
+
+---
+
+<!-- id:seed0002 date:${new Date().toISOString().slice(0, 10)} type:preference tags:workflow,setup -->
+## How to Use Memory
+
+- Use \`memory({ mode: "add" })\` to store important decisions, patterns, and facts
+- Memories persist across sessions and are automatically injected into new conversations
+- Daily activity is captured to diary files in ~/.four-mem/diary/
+- Edit MEMORY.md directly to customize your AI's long-term knowledge
+
+---
+
+<!-- id:seed0003 date:${new Date().toISOString().slice(0, 10)} type:preference tags:coding-style,setup -->
+## Default Coding Preferences
+
+Edit these to match your style:
+- Write clean, well-tested code
+- Prefer explicit types over inference
+- Use descriptive variable names
+- Document public APIs
+
+---
+`;
 
 export let CONFIG: FourMemConfig = { ...DEFAULTS };
 
@@ -83,6 +114,12 @@ export function initConfig(directory: string): void {
   const diaryDir = join(CONFIG.storagePath, "diary");
   if (!existsSync(CONFIG.storagePath)) mkdirSync(CONFIG.storagePath, { recursive: true });
   if (!existsSync(diaryDir)) mkdirSync(diaryDir, { recursive: true });
+
+  // Auto-seed MEMORY.md on first run
+  const globalMemory = join(CONFIG.storagePath, "MEMORY.md");
+  if (!existsSync(globalMemory)) {
+    writeFileSync(globalMemory, SEED_MEMORY, "utf-8");
+  }
 }
 
 export function isConfigured(): boolean {

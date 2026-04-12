@@ -23,7 +23,7 @@ function extractSessionSummary(
         toolsUsed.add(part.tool || "unknown");
       }
       if (part.type === "text" && part.text) {
-        const paths = part.text.match(/[\w./-]+\.\w{1,10}/g);
+        const paths = part.text.match(/(?:\.\/|src\/|lib\/|crates\/|app\/|config\/)[\w./-]+\.\w{1,8}/g);
         if (paths) paths.forEach((p: string) => filesMentioned.add(p));
       }
     }
@@ -49,7 +49,7 @@ function extractSessionSummary(
   if (filesMentioned.size > 0) {
     lines.push("\n### Files Referenced");
     const relevant = [...filesMentioned]
-      .filter((f) => f.length > 3 && f.includes("/"))
+      .filter((f) => f.length > 5 && f.includes("/") && !f.includes("node_modules") && !f.startsWith("http"))
       .slice(0, 10);
     if (relevant.length > 0) lines.push(relevant.join(", "));
   }

@@ -1,5 +1,18 @@
 # four-opencode-memory-plugin — Change History
 
+## [0.1.3] - 2026-04-12
+
+### Fixed
+- Plugin now shows as "four-mem" in OpenCode instead of generic "plugin"
+- Restricted file path detection in auto-capture to prevent scanning unrelated directories
+- Tightened regex to only match source-code-like paths
+
+## [0.1.2] - 2026-04-12
+
+### Added
+- Auto-seed MEMORY.md with starter template on first run
+- Bootstrap identity and preferences for new installations
+
 ## [0.1.1] - 2026-04-12
 
 ### Fixed
