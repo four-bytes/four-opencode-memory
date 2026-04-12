@@ -1,5 +1,11 @@
 # four-opencode-memory-plugin — Change History
 
+## [0.1.4] - 2026-04-12
+
+### Fixed
+- Registered memory tool under both `memory` and `mcp_memory` names for compatibility
+- Added startup debug log to verify plugin loading
+
 ## [0.1.3] - 2026-04-12
 
 ### Fixed
