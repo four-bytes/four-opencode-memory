@@ -39,32 +39,47 @@ const DEFAULTS: FourMemConfig = {
 };
 
 const SEED_MEMORY = `\
-<!-- id:seed0001 date:${new Date().toISOString().slice(0, 10)} type:preference tags:identity,setup -->
-## AI Assistant Identity
+<!-- id:soul0001 date:${new Date().toISOString().slice(0, 10)} type:preference tags:identity,soul -->
+## Developer Identity
 
-You are a coding assistant with persistent memory. You remember decisions, patterns, and
-preferences across sessions. When you learn something important, store it using the memory tool.
-
----
-
-<!-- id:seed0002 date:${new Date().toISOString().slice(0, 10)} type:preference tags:workflow,setup -->
-## How to Use Memory
-
-- Use \`memory({ mode: "add" })\` to store important decisions, patterns, and facts
-- Memories persist across sessions and are automatically injected into new conversations
-- Daily activity is captured to diary files in ~/.four-mem/diary/
-- Edit MEMORY.md directly to customize your AI's long-term knowledge
+Edit this section with your details:
+- Developer: [Your name]
+- Timezone: [Your timezone]
+- Style: [Communication style preferences]
 
 ---
 
-<!-- id:seed0003 date:${new Date().toISOString().slice(0, 10)} type:preference tags:coding-style,setup -->
-## Default Coding Preferences
+<!-- id:soul0002 date:${new Date().toISOString().slice(0, 10)} type:preference tags:languages,soul -->
+## Technology Stack
 
-Edit these to match your style:
+Edit with your preferred technologies:
+- Languages: [e.g., PHP, TypeScript, Rust, Python]
+- Frameworks: [e.g., Symfony, NestJS, React]
+- Database: [e.g., PostgreSQL, MySQL]
+- Hosting: [e.g., AWS, Vercel, self-hosted]
+
+---
+
+<!-- id:soul0003 date:${new Date().toISOString().slice(0, 10)} type:preference tags:coding-style,soul -->
+## Coding Preferences
+
+Edit with your coding style:
 - Write clean, well-tested code
 - Prefer explicit types over inference
 - Use descriptive variable names
 - Document public APIs
+- [Add your own conventions here]
+
+---
+
+<!-- id:soul0004 date:${new Date().toISOString().slice(0, 10)} type:preference tags:workflow,soul -->
+## Workflow
+
+- Plan before implementing
+- Every project needs documentation (README, CHANGELOG)
+- Use semantic versioning
+- Test before merging
+- [Add your workflow preferences here]
 
 ---
 `;

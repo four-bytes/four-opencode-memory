@@ -1,5 +1,11 @@
 # four-opencode-memory-plugin — Change History
 
+## [0.1.9] - 2026-04-12
+
+### Changed
+- Improved MEMORY.md seed template with OpenClaw-style soul/identity sections
+- New installations now get structured identity, tech stack, coding preferences, and workflow sections
+
 ## [0.1.8] - 2026-04-12
 
 ### Fixed
