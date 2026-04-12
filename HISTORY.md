@@ -1,5 +1,10 @@
 # four-opencode-memory-plugin — Change History
 
+## [0.1.1] - 2026-04-12
+
+### Fixed
+- Version bump for proper release management
+
 ## [0.1.0] - 2026-04-12
 
 ### Added

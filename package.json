@@ -1,6 +1,6 @@
 {
   "name": "four-opencode-memory-plugin",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Zero-dependency memory plugin for OpenCode — persistent AI memory using Markdown files",
   "type": "module",
   "main": "dist/plugin.js",
