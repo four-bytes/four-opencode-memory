@@ -1,6 +1,6 @@
 {
   "name": "four-opencode-memory-plugin",
-  "version": "0.1.5",
+  "version": "0.1.8",
   "description": "Zero-dependency memory plugin for OpenCode — persistent AI memory using Markdown files",
   "type": "module",
   "main": "dist/plugin.js",
@@ -32,7 +32,7 @@
   },
   "opencode": {
     "type": "plugin",
-    "hooks": ["chat.message", "event"]
+    "hooks": ["chat.message", "event", "experimental.chat.system.transform"]
   },
   "files": ["dist", "package.json"]
 }

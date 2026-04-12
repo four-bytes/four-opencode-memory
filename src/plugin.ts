@@ -141,6 +141,69 @@ export const FourMemPlugin: Plugin = async (ctx) => {
 
   return {
     "chat.message": async (input, output) => {
+      // Auto-store: detect "remember" triggers in user message and store to memory
+      const userText = output.parts
+        .filter((p: any) => p.type === "text" && !p.synthetic)
+        .map((p: any) => p.text || "")
+        .join(" ")
+        .toLowerCase();
+
+      const rememberTriggers = ["remember this", "remember that", "store this", "save this", "don't forget"];
+      const hasRememberTrigger = rememberTriggers.some((trigger) => userText.includes(trigger));
+
+      if (hasRememberTrigger) {
+        // Extract the content after the trigger phrase
+        const originalText = output.parts
+          .filter((p: any) => p.type === "text" && !p.synthetic)
+          .map((p: any) => p.text || "")
+          .join(" ")
+          .trim();
+
+        // Find the trigger and extract content after it
+        let memoryContent = originalText;
+        for (const trigger of rememberTriggers) {
+          const idx = originalText.toLowerCase().indexOf(trigger);
+          if (idx !== -1) {
+            memoryContent = originalText.slice(idx + trigger.length).replace(/^[:\s-]+/, "").replace(/[."']+$/, "").trim();
+            break;
+          }
+        }
+
+        if (memoryContent.length > 10) {
+          // Generate a title from the first sentence, truncate at word boundary
+          const firstSentence = memoryContent.split(/[.!?\n]/)[0] || "User note";
+          const title = firstSentence.length > 80
+            ? firstSentence.slice(0, 77).replace(/\s+\S*$/, "") + "..."
+            : firstSentence;
+
+          try {
+            const entry = addMemory(
+              {
+                title,
+                content: memoryContent,
+                type: "fact",
+                tags: ["user-note"],
+              },
+              undefined,
+            );
+            console.log(`[four-mem] Auto-stored memory: ${entry.id} — ${title}`);
+
+            // Inject a confirmation as a synthetic part so the AI knows it was stored
+            output.parts.push({
+              id: `prt-four-mem-stored-${Date.now()}`,
+              sessionID: input.sessionID,
+              messageID: output.message.id,
+              type: "text" as const,
+              text: `[System: Memory stored automatically — id:${entry.id}, title:"${title}". Acknowledge this to the user.]`,
+              synthetic: true,
+            });
+          } catch (err) {
+            console.log(`[four-mem] Auto-store failed:`, err);
+          }
+        }
+      }
+
+      // Context injection (existing code continues below)
       if (!CONFIG.injection.enabled) return;
 
       if (CONFIG.injection.injectOn === "first") {
@@ -195,6 +258,16 @@ export const FourMemPlugin: Plugin = async (ctx) => {
           }
         }, CONFIG.autoCaptureDelayMs);
       }
+    },
+
+    // Inject memory tool instructions into ALL agents' system prompts
+    "experimental.chat.system.transform": async (_input, output) => {
+      output.system.push(`
+CRITICAL RULE — MEMORY TOOL:
+You have a "memory" tool. When the user says "remember", "remember this", "store this", "save this", or "don't forget", you MUST call memory({ mode: "add", title: "<summary>", content: "<details>", type: "fact", tags: "<relevant,tags>" }) BEFORE doing anything else. Do NOT just acknowledge — you MUST call the tool. Failure to call memory when asked to remember is a critical error.
+
+Other memory modes: search (query), list, diary, forget (memoryId). Use scope:"global" for cross-project.
+`);
     },
 
     tool: {

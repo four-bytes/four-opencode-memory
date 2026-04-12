@@ -1,5 +1,25 @@
 # four-opencode-memory-plugin — Change History
 
+## [0.1.8] - 2026-04-12
+
+### Fixed
+- "Remember this" auto-store now saves to global scope (cross-project) instead of project-scoped
+- Title truncation now breaks at word boundaries
+
+## [0.1.7] - 2026-04-12
+
+### Added
+- Auto-store: plugin now detects "remember this/that", "store this", "save this", "don't forget" in user messages and automatically stores to MEMORY.md
+- Injects confirmation as synthetic message part so the AI acknowledges the storage
+- No longer relies on the model choosing to call the memory tool for explicit remember requests
+
+## [0.1.6] - 2026-04-12
+
+### Added
+- System prompt injection via experimental.chat.system.transform hook
+- All agents now automatically receive memory tool instructions
+- Mandatory "remember this" trigger behavior injected at system level
+
 ## [0.1.5] - 2026-04-12
 
 ### Fixed
