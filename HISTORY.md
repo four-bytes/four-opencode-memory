@@ -1,5 +1,27 @@
 # four-opencode-memory-plugin — Change History
 
+## [0.2.2] - 2026-04-12
+
+### Added
+- Recall intent detection: "do you remember", "weißt du noch", "was hatten wir besprochen" etc. triggers automatic memory search
+- System prompt now covers both STORE and RECALL intents in any language
+
+## [0.2.1] - 2026-04-12
+
+### Changed
+- Memory storage is now AI-driven: the model detects "remember" intent in ANY language via system prompt
+- Removed hardcoded trigger word list — AI handles language detection naturally
+- Plugin-level auto-store simplified to minimal fallback for "remember this:" / "merk dir:" patterns only
+- System prompt emphasizes intent detection over keyword matching
+
+## [0.2.0] - 2026-04-12
+
+### Added
+- Multi-language remember triggers: English + German (remember, merk dir, speicher, vergiss nicht, etc.)
+- Loose trigger matching: just "remember" anywhere in message triggers auto-store
+- Specific triggers extract content after the phrase, loose triggers use full message
+- Updated system prompt injection to mention both languages
+
 ## [0.1.9] - 2026-04-12
 
 ### Changed

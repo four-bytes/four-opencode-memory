@@ -141,36 +141,27 @@ export const FourMemPlugin: Plugin = async (ctx) => {
 
   return {
     "chat.message": async (input, output) => {
-      // Auto-store: detect "remember" triggers in user message and store to memory
+      // Fallback auto-store: catch the most obvious "remember" patterns
+      // Primary mechanism is the AI calling memory({ mode: "add" }) via system prompt
       const userText = output.parts
         .filter((p: any) => p.type === "text" && !p.synthetic)
         .map((p: any) => p.text || "")
-        .join(" ")
-        .toLowerCase();
+        .join(" ");
 
-      const rememberTriggers = ["remember this", "remember that", "store this", "save this", "don't forget"];
-      const hasRememberTrigger = rememberTriggers.some((trigger) => userText.includes(trigger));
+      const lowerText = userText.toLowerCase();
+      const hasExplicitTrigger =
+        lowerText.includes("remember this:") ||
+        lowerText.includes("remember that:") ||
+        lowerText.includes("merk dir:") ||
+        lowerText.includes("merke dir:");
 
-      if (hasRememberTrigger) {
-        // Extract the content after the trigger phrase
-        const originalText = output.parts
-          .filter((p: any) => p.type === "text" && !p.synthetic)
-          .map((p: any) => p.text || "")
-          .join(" ")
-          .trim();
-
-        // Find the trigger and extract content after it
-        let memoryContent = originalText;
-        for (const trigger of rememberTriggers) {
-          const idx = originalText.toLowerCase().indexOf(trigger);
-          if (idx !== -1) {
-            memoryContent = originalText.slice(idx + trigger.length).replace(/^[:\s-]+/, "").replace(/[."']+$/, "").trim();
-            break;
-          }
-        }
+      if (hasExplicitTrigger && userText.length > 15) {
+        const colonIdx = userText.indexOf(":");
+        const memoryContent = colonIdx !== -1
+          ? userText.slice(colonIdx + 1).replace(/[."']+$/, "").trim()
+          : userText.trim();
 
         if (memoryContent.length > 10) {
-          // Generate a title from the first sentence, truncate at word boundary
           const firstSentence = memoryContent.split(/[.!?\n]/)[0] || "User note";
           const title = firstSentence.length > 80
             ? firstSentence.slice(0, 77).replace(/\s+\S*$/, "") + "..."
@@ -178,23 +169,17 @@ export const FourMemPlugin: Plugin = async (ctx) => {
 
           try {
             const entry = addMemory(
-              {
-                title,
-                content: memoryContent,
-                type: "fact",
-                tags: ["user-note"],
-              },
+              { title, content: memoryContent, type: "fact", tags: ["user-note"] },
               undefined,
             );
             console.log(`[four-mem] Auto-stored memory: ${entry.id} — ${title}`);
 
-            // Inject a confirmation as a synthetic part so the AI knows it was stored
             output.parts.push({
               id: `prt-four-mem-stored-${Date.now()}`,
               sessionID: input.sessionID,
               messageID: output.message.id,
               type: "text" as const,
-              text: `[System: Memory stored automatically — id:${entry.id}, title:"${title}". Acknowledge this to the user.]`,
+              text: `[System: Memory auto-stored — id:${entry.id}, title:"${title}". The user asked to remember something. Acknowledge this.]`,
               synthetic: true,
             });
           } catch (err) {
@@ -203,7 +188,7 @@ export const FourMemPlugin: Plugin = async (ctx) => {
         }
       }
 
-      // Context injection (existing code continues below)
+      // Context injection
       if (!CONFIG.injection.enabled) return;
 
       if (CONFIG.injection.injectOn === "first") {
@@ -260,13 +245,29 @@ export const FourMemPlugin: Plugin = async (ctx) => {
       }
     },
 
-    // Inject memory tool instructions into ALL agents' system prompts
     "experimental.chat.system.transform": async (_input, output) => {
       output.system.push(`
-CRITICAL RULE — MEMORY TOOL:
-You have a "memory" tool. When the user says "remember", "remember this", "store this", "save this", or "don't forget", you MUST call memory({ mode: "add", title: "<summary>", content: "<details>", type: "fact", tags: "<relevant,tags>" }) BEFORE doing anything else. Do NOT just acknowledge — you MUST call the tool. Failure to call memory when asked to remember is a critical error.
+CRITICAL RULE — PERSISTENT MEMORY:
+You have a "memory" tool. Follow these rules strictly:
 
-Other memory modes: search (query), list, diary, forget (memoryId). Use scope:"global" for cross-project.
+STORE — When the user expresses intent to remember, save, or persist information — in ANY language — you MUST call memory({ mode: "add", title: "<short summary>", content: "<full detail>", type: "<decision|pattern|fact|preference|error>", tags: "<comma,separated>" }). Detect the intent, not specific trigger words. Examples:
+- "remember that we chose PostgreSQL" → call memory add, type: decision
+- "merk dir, wir nutzen immer DTOs" → call memory add, type: pattern
+- "don't forget the API key rotates weekly" → call memory add, type: fact
+- Any language, any phrasing that implies "keep this for later" → call memory add
+
+RECALL — When the user asks about past decisions, context, or knowledge — in ANY language — you MUST call memory({ mode: "search", query: "relevant terms" }) BEFORE answering. Detect the intent. Examples:
+- "do you remember what we decided about the API?" → call memory search
+- "weißt du noch, welches Framework wir gewählt haben?" → call memory search
+- "was hatten wir besprochen?" → call memory search
+- "what was our approach for authentication?" → call memory search
+- Any question about past work, decisions, or context → call memory search first, then answer
+
+PROACTIVE — Before complex tasks, search memory for relevant context. After completing significant work, store a summary without being asked.
+
+NEVER say "I'll remember that" without calling memory add. NEVER answer a recall question from assumption without calling memory search first. Failure to use the tool is a critical error.
+
+Other modes: list (browse all), diary (session logs), forget (remove by memoryId). Use scope:"global" for cross-project.
 `);
     },
 
