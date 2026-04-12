@@ -197,10 +197,8 @@ export const FourMemPlugin: Plugin = async (ctx) => {
       }
     },
 
-    // Register tool under BOTH names so it works with and without mcp_ prefix
     tool: {
       memory: memoryTool,
-      mcp_memory: memoryTool,
     },
   };
 };

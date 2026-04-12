@@ -1,5 +1,10 @@
 # four-opencode-memory-plugin — Change History
 
+## [0.1.5] - 2026-04-12
+
+### Fixed
+- Removed duplicate mcp_memory tool registration (claude plugin already adds mcp_ prefix)
+
 ## [0.1.4] - 2026-04-12
 
 ### Fixed
