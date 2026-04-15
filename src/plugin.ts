@@ -220,7 +220,7 @@ export const FourMemPlugin: Plugin = async (ctx) => {
         synthetic: true,
       };
 
-      output.parts.unshift(contextPart);
+      output.parts.push(contextPart);
     },
 
     event: async (input) => {
@@ -247,25 +247,13 @@ export const FourMemPlugin: Plugin = async (ctx) => {
 
     "experimental.chat.system.transform": async (_input, output) => {
       output.system.push(`
-CRITICAL RULE — PERSISTENT MEMORY:
-You have a "memory" tool. Follow these rules strictly:
+PERSISTENT MEMORY — You have a "memory" tool for cross-session knowledge.
 
-STORE — When the user expresses intent to remember, save, or persist information — in ANY language — you MUST call memory({ mode: "add", title: "<short summary>", content: "<full detail>", type: "<decision|pattern|fact|preference|error>", tags: "<comma,separated>" }). Detect the intent, not specific trigger words. Examples:
-- "remember that we chose PostgreSQL" → call memory add, type: decision
-- "merk dir, wir nutzen immer DTOs" → call memory add, type: pattern
-- "don't forget the API key rotates weekly" → call memory add, type: fact
-- Any language, any phrasing that implies "keep this for later" → call memory add
+STORE — Only when the user EXPLICITLY asks to remember/save/store something (e.g., "remember that...", "merk dir...", "save this decision"). Do NOT store normal instructions, questions, or task descriptions as memories.
 
-RECALL — When the user asks about past decisions, context, or knowledge — in ANY language — you MUST call memory({ mode: "search", query: "relevant terms" }) BEFORE answering. Detect the intent. Examples:
-- "do you remember what we decided about the API?" → call memory search
-- "weißt du noch, welches Framework wir gewählt haben?" → call memory search
-- "was hatten wir besprochen?" → call memory search
-- "what was our approach for authentication?" → call memory search
-- Any question about past work, decisions, or context → call memory search first, then answer
+RECALL — When the user asks about past decisions or context (e.g., "do you remember...?", "what did we decide about...?"), call memory({ mode: "search", query: "..." }) BEFORE answering.
 
-PROACTIVE — Before complex tasks, search memory for relevant context. After completing significant work, store a summary without being asked.
-
-NEVER say "I'll remember that" without calling memory add. NEVER answer a recall question from assumption without calling memory search first. Failure to use the tool is a critical error.
+PROACTIVE — Before complex tasks, search memory for relevant context. After completing significant work, store a brief summary.
 
 Other modes: list (browse all), diary (session logs), forget (remove by memoryId). Use scope:"global" for cross-project.
 `);
