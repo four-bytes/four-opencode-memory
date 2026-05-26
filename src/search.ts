@@ -1,7 +1,5 @@
 import { existsSync } from "node:fs";
-import { join } from "node:path";
-import { CONFIG } from "./config.js";
-import { parseMemoryFile, projectHash, type MemoryEntry } from "./memory-store.js";
+import { parseMemoryFile, projectHash, memoryPath, type MemoryEntry } from "./memory-store.js";
 
 export interface SearchResult {
   entry: MemoryEntry;
@@ -36,10 +34,10 @@ export function searchMemories(
 
   if (projectDir) {
     const hash = projectHash(projectDir);
-    scan(join(CONFIG.storagePath, "projects", hash, "MEMORY.md"), `project:${hash}`, 0.1);
+    scan(memoryPath(projectDir), `project:${hash}`, 0.1);
   }
 
-  scan(join(CONFIG.storagePath, "MEMORY.md"), "global", 0);
+  scan(memoryPath(), "global", 0);
 
   return results.sort((a, b) => b.score - a.score).slice(0, limit);
 }

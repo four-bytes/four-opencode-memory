@@ -21,9 +21,9 @@ function trimDiary(raw: string): string {
   return truncateContent(raw.trim(), DIARY_CHAR_LIMIT);
 }
 
-export function assembleContext(projectDir?: string): string {
-  const memories = listMemories(projectDir, CONFIG.injection.maxMemories);
-  const diaryRaw = readRecentDiary(CONFIG.injection.diaryLookbackDays);
+export async function assembleContext(projectDir?: string): Promise<string> {
+  const memories = await listMemories(projectDir, CONFIG.injection.maxMemories);
+  const diaryRaw = await readRecentDiary(CONFIG.injection.diaryLookbackDays);
   const diary = trimDiary(diaryRaw);
 
   if (memories.length === 0 && !diary) return "";

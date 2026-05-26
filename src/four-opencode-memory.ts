@@ -58,7 +58,7 @@ export const FourMemPlugin: Plugin = async (ctx) => {
             const parsedTags = args.tags
               ? args.tags.split(",").map((t: string) => t.trim().toLowerCase())
               : [];
-            const entry = addMemory(
+            const entry = await addMemory(
               {
                 title: args.title,
                 content: args.content,
@@ -89,7 +89,7 @@ export const FourMemPlugin: Plugin = async (ctx) => {
           }
 
           case "list": {
-            const memories = listMemories(scopeDir, args.limit || 20);
+            const memories = await listMemories(scopeDir, args.limit || 20);
             return JSON.stringify({
               success: true,
               count: memories.length,
@@ -106,7 +106,7 @@ export const FourMemPlugin: Plugin = async (ctx) => {
           case "forget": {
             if (!args.memoryId)
               return JSON.stringify({ success: false, error: "memoryId required" });
-            const removed = removeMemory(args.memoryId, scopeDir);
+            const removed = await removeMemory(args.memoryId, scopeDir);
             return JSON.stringify({
               success: removed,
               message: removed ? "Memory removed" : "Memory not found",
@@ -116,14 +116,14 @@ export const FourMemPlugin: Plugin = async (ctx) => {
           case "diary": {
             const date = args.date;
             if (date) {
-              const content = readDiary(date);
+              const content = await readDiary(date);
               return JSON.stringify({
                 success: true,
                 date,
                 content: content || "No diary entry for this date",
               });
             }
-            const dates = listDiaryDates();
+            const dates = await listDiaryDates();
             return JSON.stringify({
               success: true,
               dates: dates.slice(0, 30),
@@ -168,7 +168,7 @@ export const FourMemPlugin: Plugin = async (ctx) => {
             : firstSentence;
 
           try {
-            const entry = addMemory(
+            const entry = await addMemory(
               { title, content: memoryContent, type: "fact", tags: ["user-note"] },
               undefined,
             );
@@ -208,7 +208,7 @@ export const FourMemPlugin: Plugin = async (ctx) => {
         }
       }
 
-      const context = assembleContext(directory);
+      const context = await assembleContext(directory);
       if (!context) return;
 
       const contextPart = {
