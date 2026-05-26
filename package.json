@@ -1,22 +1,29 @@
 {
   "name": "four-opencode-memory-plugin",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Zero-dependency memory plugin for OpenCode — persistent AI memory using Markdown files",
   "type": "module",
-  "main": "dist/plugin.js",
-  "types": "dist/plugin.d.ts",
+  "main": "dist/four-opencode-memory.js",
+  "types": "dist/four-opencode-memory.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/plugin.js",
-      "types": "./dist/plugin.d.ts"
+      "import": "./dist/four-opencode-memory.js",
+      "types": "./dist/four-opencode-memory.d.ts"
     }
   },
   "scripts": {
-    "build": "bun build src/plugin.ts --outdir dist --target bun --format esm",
-    "dev": "bun build src/plugin.ts --outdir dist --target bun --format esm --watch",
+    "build": "bun build src/four-opencode-memory.ts --outdir dist --target bun --format esm",
+    "dev": "bun build src/four-opencode-memory.ts --outdir dist --target bun --format esm --watch",
     "typecheck": "bunx tsc --noEmit"
   },
-  "keywords": ["opencode", "plugin", "memory", "ai", "markdown", "zero-dependency"],
+  "keywords": [
+    "opencode",
+    "plugin",
+    "memory",
+    "ai",
+    "markdown",
+    "zero-dependency"
+  ],
   "author": "Four Bytes",
   "license": "MIT",
   "repository": {
@@ -32,7 +39,14 @@
   },
   "opencode": {
     "type": "plugin",
-    "hooks": ["chat.message", "event", "experimental.chat.system.transform"]
+    "hooks": [
+      "chat.message",
+      "event",
+      "experimental.chat.system.transform"
+    ]
   },
-  "files": ["dist", "package.json"]
+  "files": [
+    "dist",
+    "package.json"
+  ]
 }

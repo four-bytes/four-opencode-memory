@@ -146,7 +146,7 @@ Modules:
 ├── search.ts           → Grep-based memory search
 ├── context-assembly.ts → Build injection context
 ├── auto-capture.ts     → Session activity extraction
-└── plugin.ts           → Entry point, hook wiring
+└── four-opencode-memory.ts     → Entry point, hook wiring
 ```
 
 ## Development

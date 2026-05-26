@@ -20,7 +20,7 @@
 ## Key Files
 | File | Purpose |
 |------|---------|
-| src/plugin.ts | Entry point, OpenCode hook wiring |
+| src/four-opencode-memory.ts | Entry point, OpenCode hook wiring |
 | src/config.ts | JSONC config loader |
 | src/diary.ts | Daily diary file management |
 | src/memory-store.ts | MEMORY.md read/write/parse |
