@@ -81,7 +81,7 @@ export async function performAutoCapture(
   const summary = extractSessionSummary(messages);
   if (!summary) return;
 
-  appendDiary(summary.title, summary.content);
+  await appendDiary(summary.title, summary.content);
 
   if (CONFIG.showToasts && ctx.client?.tui) {
     await ctx.client.tui

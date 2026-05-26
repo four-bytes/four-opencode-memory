@@ -4,6 +4,7 @@ import { homedir } from "node:os";
 
 export interface FourMemConfig {
   storagePath: string;
+  fallbackPaths?: string[];
   opencodeProvider?: string;
   opencodeModel?: string;
   autoCaptureEnabled: boolean;
@@ -23,6 +24,7 @@ export interface FourMemConfig {
 
 const DEFAULTS: FourMemConfig = {
   storagePath: join(homedir(), ".four-mem"),
+  fallbackPaths: undefined,
   autoCaptureEnabled: true,
   autoCaptureDelayMs: 10000,
   injection: {
@@ -118,6 +120,10 @@ export function initConfig(directory: string): void {
 
   CONFIG = { ...DEFAULTS, ...merged } as FourMemConfig;
   CONFIG.storagePath = expandHome(CONFIG.storagePath);
+
+  if (CONFIG.fallbackPaths) {
+    CONFIG.fallbackPaths = CONFIG.fallbackPaths.map(expandHome);
+  }
 
   if (CONFIG.injection) {
     CONFIG.injection = { ...DEFAULTS.injection, ...merged.injection };
