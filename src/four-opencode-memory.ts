@@ -5,14 +5,20 @@ import { performAutoCapture } from "./auto-capture.js";
 import { addMemory, removeMemory, listMemories } from "./memory-store.js";
 import { searchMemories } from "./search.js";
 import { listDiaryDates, readDiary } from "./diary.js";
+import pkg from "../package.json";
 
 import type { Plugin } from "@opencode-ai/plugin";
+
+const DEBUG = !!process.env.FOUR_MEM_DEBUG;
+export function debug(...args: unknown[]): void {
+  if (DEBUG) console.error("[four-mem]", ...args);
+}
 
 export const FourMemPlugin: Plugin = async (ctx) => {
   const { directory } = ctx;
   initConfig(directory);
 
-  console.log("[four-mem] Plugin loaded. Storage:", CONFIG.storagePath, "Directory:", directory);
+  console.error(`[four-mem] v${pkg.version} loaded`);
 
   let idleTimeout: ReturnType<typeof setTimeout> | null = null;
 
@@ -172,7 +178,7 @@ export const FourMemPlugin: Plugin = async (ctx) => {
               { title, content: memoryContent, type: "fact", tags: ["user-note"] },
               undefined,
             );
-            console.log(`[four-mem] Auto-stored memory: ${entry.id} — ${title}`);
+            debug(`Auto-stored memory: ${entry.id} — ${title}`);
 
             output.parts.push({
               id: `prt-four-mem-stored-${Date.now()}`,
@@ -183,7 +189,7 @@ export const FourMemPlugin: Plugin = async (ctx) => {
               synthetic: true,
             });
           } catch (err) {
-            console.log(`[four-mem] Auto-store failed:`, err);
+            debug(`Auto-store failed:`, err);
           }
         }
       }

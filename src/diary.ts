@@ -3,6 +3,7 @@ import { readFile, writeFile, appendFile, mkdir } from "node:fs/promises";
 import { join, basename } from "node:path";
 import { CONFIG } from "./config.js";
 import { withFileLock, lockKey } from "./file-lock.js";
+import { debug } from "./four-opencode-memory.js";
 
 function diaryDir(): string {
   return join(CONFIG.storagePath, "diary");
@@ -44,7 +45,7 @@ async function readFileSafe(path: string): Promise<string> {
   } catch (error: any) {
     if (error.code === "ENOENT") return "";
     if (error.code === "EIO") {
-      console.warn(`[four-mem] EIO-Fehler beim Lesen von ${path}: ${error.message}`);
+      debug(`EIO-Fehler beim Lesen von ${path}: ${error.message}`);
       return "";
     }
     throw error;

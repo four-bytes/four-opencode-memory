@@ -5,8 +5,7 @@ import { createHash, randomUUID } from "node:crypto";
 import { setTimeout as sleep } from "node:timers/promises";
 import { CONFIG } from "./config.js";
 import { withFileLock, lockKey } from "./file-lock.js";
-
-const LOG_PREFIX = "[four-mem]";
+import { debug } from "./four-opencode-memory.js";
 
 export interface MemoryEntry {
   id: string;
@@ -30,12 +29,12 @@ export function memoryPath(projectDir?: string): string {
     ? join(CONFIG.storagePath, "projects", projectHash(projectDir), "MEMORY.md")
     : join(CONFIG.storagePath, "MEMORY.md");
 
-  console.debug(`${LOG_PREFIX} Lese Memory-Datei: ${primaryPath}`);
+  debug(`Lese Memory-Datei: ${primaryPath}`);
 
   if (CONFIG.fallbackPaths) {
     for (const fallback of CONFIG.fallbackPaths) {
       if (existsSync(fallback)) {
-        console.debug(`${LOG_PREFIX} Verwende Fallback-Pfad: ${fallback}`);
+        debug(`Verwende Fallback-Pfad: ${fallback}`);
         return fallback;
       }
     }
@@ -45,10 +44,10 @@ export function memoryPath(projectDir?: string): string {
 }
 
 export function parseMemoryFile(filePath: string): MemoryEntry[] {
-  console.debug(`${LOG_PREFIX} Parse Memory-Datei: ${filePath}`);
+  debug(`Parse Memory-Datei: ${filePath}`);
 
   if (!existsSync(filePath)) {
-    console.debug(`${LOG_PREFIX} Datei nicht gefunden: ${filePath}`);
+    debug(`Datei nicht gefunden: ${filePath}`);
     return [];
   }
 
@@ -56,9 +55,9 @@ export function parseMemoryFile(filePath: string): MemoryEntry[] {
   try {
     raw = readFileSync(filePath, "utf-8");
   } catch (error: any) {
-    console.debug(`${LOG_PREFIX} Fehler beim Lesen von ${filePath}: ${error.message}`);
+    debug(`Fehler beim Lesen von ${filePath}: ${(error as Error).message}`);
     if (error.code === "EIO") {
-      console.warn(`${LOG_PREFIX} EIO-Fehler beim Lesen von ${filePath}: ${error.message}`);
+      debug(`EIO-Fehler beim Lesen von ${filePath}: ${error.message}`);
       return [];
     }
     throw error;
@@ -126,15 +125,15 @@ async function readFileSafe(filePath: string, encoding: BufferEncoding): Promise
     } catch (error: any) {
       if (error.code === "EBUSY" || error.code === "EAGAIN") {
         if (attempt < MAX_RETRIES) {
-          console.debug(`${LOG_PREFIX} Datei busy, Versuch ${attempt}/${MAX_RETRIES}: ${filePath}`);
+          debug(`Datei busy, Versuch ${attempt}/${MAX_RETRIES}: ${filePath}`);
           await sleep(10 * attempt);
           continue;
         }
-        console.warn(`${LOG_PREFIX} Busy nach ${MAX_RETRIES} Versuchen: ${filePath}`);
+        debug(`Busy nach ${MAX_RETRIES} Versuchen: ${filePath}`);
         return "";
       }
       if (error.code === "EIO") {
-        console.warn(`${LOG_PREFIX} EIO-Fehler beim Lesen von ${filePath}: ${error.message}`);
+        debug(`EIO-Fehler beim Lesen von ${filePath}: ${error.message}`);
         return "";
       }
       if (error.code === "ENOENT") {
