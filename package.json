@@ -1,5 +1,5 @@
 {
-  "name": "four-opencode-memory-plugin",
+  "name": "@four-bytes/four-opencode-memory",
   "version": "0.2.3",
   "description": "Zero-dependency memory plugin for OpenCode — persistent AI memory using Markdown files",
   "type": "module",
@@ -25,10 +25,10 @@
     "zero-dependency"
   ],
   "author": "Four Bytes",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/four-bytes/four-opencode-memory-plugin.git"
+    "url": "git+https://github.com/four-bytes/four-opencode-memory.git"
   },
   "dependencies": {
     "@opencode-ai/plugin": "^1.4.3"
