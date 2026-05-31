@@ -1,4 +1,4 @@
-# four-opencode-memory-plugin - CLAUDE.md
+# four-opencode-memory-plugin - AGENTS.md
 
 ## Project Overview
 - Zero-dependency memory plugin for OpenCode
