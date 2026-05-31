@@ -221,17 +221,7 @@ export const FourMemPlugin: Plugin = async (ctx) => {
     },
 
     "experimental.chat.system.transform": async (_input, output) => {
-      output.system.push(`
-PERSISTENT MEMORY — You have a "memory" tool for cross-session knowledge.
-
-STORE — Only when the user EXPLICITLY asks to remember/save/store something (e.g., "remember that...", "merk dir...", "save this decision"). Do NOT store normal instructions, questions, or task descriptions as memories.
-
-RECALL — When the user asks about past decisions or context (e.g., "do you remember...?", "what did we decide about...?"), call memory({ mode: "search", query: "..." }) BEFORE answering.
-
-PROACTIVE — Before complex tasks, search memory for relevant context. After completing significant work, store a brief summary.
-
-Other modes: list (browse all), diary (session logs), forget (remove by memoryId). Use scope:"global" for cross-project.
-`);
+      output.system.push(`memory tool: search before recall queries; store ONLY when user explicitly says "remember/merk dir/save". Modes: add, search, list, forget, diary. scope:"global" for cross-project.`);
     },
 
     tool: {
