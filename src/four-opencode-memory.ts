@@ -194,39 +194,8 @@ export const FourMemPlugin: Plugin = async (ctx) => {
         }
       }
 
-      // Context injection
-      if (!CONFIG.injection.enabled) return;
-
-      if (CONFIG.injection.injectOn === "first") {
-        try {
-          const messagesResponse = await ctx.client.session.messages({
-            path: { id: input.sessionID },
-          });
-          const messages = messagesResponse.data || [];
-          const userMsgCount = messages.filter(
-            (m: any) =>
-              m.info.role === "user" &&
-              !m.parts.every((p: any) => p.type !== "text" || p.synthetic === true),
-          ).length;
-          if (userMsgCount > 1) return;
-        } catch {
-          // If we can't check, inject anyway
-        }
-      }
-
-      const context = await assembleContext(directory);
-      if (!context) return;
-
-      const contextPart = {
-        id: `prt-four-mem-${Date.now()}`,
-        sessionID: input.sessionID,
-        messageID: output.message.id,
-        type: "text" as const,
-        text: context,
-        synthetic: true,
-      };
-
-      output.parts.push(contextPart);
+      // Context injection removed — memories are now on-demand via memory({mode:"search"}).
+      // (Previously pushed assembleContext() into every first user message.)
     },
 
     event: async (input) => {

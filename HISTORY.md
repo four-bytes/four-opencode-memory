@@ -1,5 +1,17 @@
 # four-opencode-memory-plugin — Change History
 
+## v0.4.0 — 2026-05-31
+
+### Changed
+- **BREAKING:** Proaktive Memory-Context-Injection in erste User-Message entfernt
+- Memory wird nun ausschließlich on-demand via `memory({ mode: "search" })` Tool abgerufen
+- CONFIG.injection.enabled / injectOn / Felder sind effektiv no-op (Cleanup in späterem PR)
+
+### Migration
+- Nutzer die auf Auto-Inject angewiesen sind: explizit `memory({mode:"search",query:"..."})` vor relevanten Tasks aufrufen
+
+
+
 ## v0.3.0 — 2026-05-31
 
 ### Changed
