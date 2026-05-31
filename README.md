@@ -1,4 +1,4 @@
-# four-opencode-memory-plugin
+# @four-bytes/four-opencode-memory
 
 Zero-dependency memory plugin for [OpenCode](https://opencode.ai) — persistent AI memory using plain Markdown files.
 

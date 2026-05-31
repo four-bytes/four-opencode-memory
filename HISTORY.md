@@ -1,5 +1,17 @@
 # four-opencode-memory-plugin — Change History
 
+## v0.3.0 — 2026-05-31
+
+### Changed
+- **BREAKING:** npm-Paket umbenannt: `four-opencode-memory-plugin` → `@four-bytes/four-opencode-memory` (Sprint 0 der opencode-plugins Strategy)
+- **BREAKING:** License gewechselt: MIT → Apache-2.0 (Copyright 2025 Four Bytes bleibt)
+- GitHub-Repo umbenannt: `four-bytes/four-opencode-memory-plugin` → `four-bytes/four-opencode-memory`
+
+### Migration
+- Nutzer mit `four-opencode-memory-plugin` müssen auf `@four-bytes/four-opencode-memory` umstellen
+- Altes Paket wird auf npm deprecated (separater Schritt)
+
+
 ## [0.2.2] - 2026-04-12
 
 ### Added
