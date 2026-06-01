@@ -1,6 +1,7 @@
 import { tool } from "@opencode-ai/plugin";
 import { initConfig, CONFIG } from "./config.js";
 import { assembleContext } from "./context-assembly.js";
+import { logDebugEvent } from "./debug-logger.js";
 import { performAutoCapture } from "./auto-capture.js";
 import { addMemory, removeMemory, listMemories } from "./memory-store.js";
 import { searchMemories } from "./search.js";
@@ -9,7 +10,7 @@ import pkg from "../package.json";
 
 import type { Plugin } from "@opencode-ai/plugin";
 
-const DEBUG = !!process.env.FOUR_MEM_DEBUG;
+const DEBUG = process.env.CC_DEBUG === "true";
 export function debug(...args: unknown[]): void {
   if (DEBUG) console.error("[four-mem]", ...args);
 }
@@ -42,6 +43,8 @@ export const FourMemPlugin: Plugin = async (ctx) => {
     async execute(args, toolCtx) {
       const mode = args.mode || "help";
       const scopeDir = args.scope === "global" ? undefined : toolCtx.directory;
+
+      logDebugEvent("tool.memory", { mode, scope: args.scope });
 
       try {
         switch (mode) {
@@ -147,6 +150,11 @@ export const FourMemPlugin: Plugin = async (ctx) => {
 
   return {
     "chat.message": async (input, output) => {
+      logDebugEvent("chat.message", {
+        sessionID: input.sessionID,
+        outputLen: output.parts?.length ?? 0,
+      });
+
       // Fallback auto-store: catch the most obvious "remember" patterns
       // Primary mechanism is the AI calling memory({ mode: "add" }) via system prompt
       const userText = output.parts
@@ -179,6 +187,11 @@ export const FourMemPlugin: Plugin = async (ctx) => {
               undefined,
             );
             debug(`Auto-stored memory: ${entry.id} — ${title}`);
+            logDebugEvent("chat.message.auto-store", {
+              memoryId: entry.id,
+              title,
+              contentLen: memoryContent.length,
+            });
 
             output.parts.push({
               id: `prt-four-mem-stored-${Date.now()}`,
@@ -201,11 +214,15 @@ export const FourMemPlugin: Plugin = async (ctx) => {
     event: async (input) => {
       const event = input.event;
 
+      logDebugEvent("event", { eventType: event.type });
+
       if (event.type === "session.idle") {
         if (!CONFIG.autoCaptureEnabled) return;
 
         const sessionID = (event as any).properties?.sessionID;
         if (!sessionID) return;
+
+        logDebugEvent("event.session.idle", { sessionID });
 
         if (idleTimeout) clearTimeout(idleTimeout);
         idleTimeout = setTimeout(async () => {
@@ -221,6 +238,9 @@ export const FourMemPlugin: Plugin = async (ctx) => {
     },
 
     "experimental.chat.system.transform": async (_input, output) => {
+      logDebugEvent("system.transform", {
+        systemLenBefore: output.system.length,
+      });
       output.system.push(`memory tool: search before recall queries; store ONLY when user explicitly says "remember/merk dir/save". Modes: add, search, list, forget, diary. scope:"global" for cross-project.`);
     },
 
