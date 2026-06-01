@@ -21,7 +21,10 @@ export function debug(...args: unknown[]): void {
 
 export function buildSnippet(content: string, max: number = 300): string {
   if (content.length <= max) return content;
-  return content.slice(0, max - 3).replace(/\s+\S*$/, "") + "…";
+  const sliced = content.slice(0, max - 1);
+  const wordCut = sliced.replace(/\s+\S*$/, "");
+  const base = wordCut.length > 0 ? wordCut : sliced;
+  return base + "…";
 }
 
 export function getMemoryById(memoryId: string, projectDir?: string): MemoryEntry | null {
@@ -84,6 +87,7 @@ export const FourMemPlugin: Plugin = async (ctx) => {
                 { command: "list", args: ["limit?", "scope?"], description: "List recent memories" },
                 { command: "forget", args: ["memoryId", "scope?"], description: "Remove a memory by ID" },
                 { command: "diary", args: ["date?"], description: "View diary for a date (YYYY-MM-DD, default: today)" },
+                { command: "get", args: ["memoryId"], description: "Fetch full content of one memory by memoryId" },
               ],
               types: ["decision", "pattern", "fact", "preference", "error"],
             });

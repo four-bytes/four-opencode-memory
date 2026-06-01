@@ -87,6 +87,17 @@ describe("buildSnippet", () => {
     expect(snippet.endsWith("…")).toBe(true);
     expect(snippet).toBe("hello world this is a test…");
   });
+
+  it("returns empty string for empty content", () => {
+    expect(buildSnippet("")).toBe("");
+  });
+
+  it("handles content without whitespace >max", () => {
+    const r = buildSnippet("a".repeat(400));
+    expect(r.length).toBe(300);
+    expect(r.endsWith("…")).toBe(true);
+    expect(r.startsWith("aaa")).toBe(true);
+  });
 });
 
 describe("getMemoryById", () => {
