@@ -1,5 +1,13 @@
 # four-opencode-memory-plugin — Change History
 
+## v0.5.0 — 2026-06-01
+
+### Added
+- Summary Cache (P7): chunk/file/module summaries with content_hash versioning
+- `src/summary-cache.ts`: getCachedSummary, setCachedSummary, auto-invalidation, cache stats
+- Integration with existing memory-store (MemoryEntry type="summary")
+- Tests: 9 summary cache tests (hash, roundtrip, invalidation, stats)
+
 ## v0.4.0 — 2026-05-31
 
 ### Changed
