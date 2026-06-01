@@ -4,7 +4,7 @@ import { join } from "node:path";
 import { tmpdir } from "node:os";
 
 describe("Debug Logger", () => {
-  const originalDebug = process.env.FOUR_MEM_DEBUG;
+  const originalDebug = process.env.CC_DEBUG;
   let logDebugEvent: (type: string, payload: Record<string, unknown>) => void;
   let tmpDir: string;
   let homedirSpy: ReturnType<typeof spyOn>;
@@ -19,23 +19,23 @@ describe("Debug Logger", () => {
   afterAll(() => {
     homedirSpy?.mockRestore();
     if (originalDebug !== undefined) {
-      process.env.FOUR_MEM_DEBUG = originalDebug;
+      process.env.CC_DEBUG = originalDebug;
     } else {
-      delete process.env.FOUR_MEM_DEBUG;
+      delete process.env.CC_DEBUG;
     }
     rmSync(tmpDir, { recursive: true, force: true });
   });
 
   afterEach(() => {
     if (originalDebug !== undefined) {
-      process.env.FOUR_MEM_DEBUG = originalDebug;
+      process.env.CC_DEBUG = originalDebug;
     } else {
-      delete process.env.FOUR_MEM_DEBUG;
+      delete process.env.CC_DEBUG;
     }
   });
 
-  it("is no-op when FOUR_MEM_DEBUG is not set", () => {
-    delete process.env.FOUR_MEM_DEBUG;
+  it("is no-op when CC_DEBUG is not set", () => {
+    delete process.env.CC_DEBUG;
     logDebugEvent("test.event", { foo: "bar" });
 
     const cacheDir = join(
@@ -47,8 +47,8 @@ describe("Debug Logger", () => {
     expect(existsSync(cacheDir)).toBe(false);
   });
 
-  it("writes JSONL line with correct fields when FOUR_MEM_DEBUG=true", () => {
-    process.env.FOUR_MEM_DEBUG = "true";
+  it("writes JSONL line with correct fields when CC_DEBUG=true", () => {
+    process.env.CC_DEBUG = "true";
     const testType = "test.event";
     const testPayload = { foo: "bar", num: 42 };
     logDebugEvent(testType, testPayload);
@@ -76,7 +76,7 @@ describe("Debug Logger", () => {
   });
 
   it("never throws even with empty payload", () => {
-    process.env.FOUR_MEM_DEBUG = "true";
+    process.env.CC_DEBUG = "true";
     expect(() => {
       logDebugEvent("test", {});
     }).not.toThrow();

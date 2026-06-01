@@ -23,13 +23,13 @@ function ensureDir(): void {
 
 /**
  * Writes a JSON debug event to a daily JSONL file.
- * No-op unless FOUR_MEM_DEBUG === "true". Never throws.
+ * No-op unless CC_DEBUG === "true". Never throws.
  */
 export function logDebugEvent(
   type: string,
   payload: Record<string, unknown>,
 ): void {
-  if (process.env.FOUR_MEM_DEBUG !== "true") return;
+  if (process.env.CC_DEBUG !== "true") return;
 
   try {
     ensureDir();
