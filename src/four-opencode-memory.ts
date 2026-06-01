@@ -1,9 +1,11 @@
+import { existsSync } from "node:fs";
 import { tool } from "@opencode-ai/plugin";
 import { initConfig, CONFIG } from "./config.js";
 import { assembleContext } from "./context-assembly.js";
 import { logDebugEvent } from "./debug-logger.js";
 import { performAutoCapture } from "./auto-capture.js";
-import { addMemory, removeMemory, listMemories } from "./memory-store.js";
+import { addMemory, removeMemory, listMemories, parseMemoryFile, memoryPath, projectHash } from "./memory-store.js";
+import type { MemoryEntry } from "./memory-store.js";
 import { searchMemories } from "./search.js";
 import { listDiaryDates, readDiary } from "./diary.js";
 import pkg from "../package.json";
@@ -17,6 +19,29 @@ export function debug(...args: unknown[]): void {
   logDebugEvent("debug", { msg });
 }
 
+export function buildSnippet(content: string, max: number = 300): string {
+  if (content.length <= max) return content;
+  return content.slice(0, max - 3).replace(/\s+\S*$/, "") + "…";
+}
+
+export function getMemoryById(memoryId: string, projectDir?: string): MemoryEntry | null {
+  if (projectDir) {
+    const projectPath = memoryPath(projectDir);
+    if (existsSync(projectPath)) {
+      const entries = parseMemoryFile(projectPath);
+      const found = entries.find((e) => e.id === memoryId);
+      if (found) return found;
+    }
+  }
+  const globalPath = memoryPath();
+  if (existsSync(globalPath)) {
+    const entries = parseMemoryFile(globalPath);
+    const found = entries.find((e) => e.id === memoryId);
+    if (found) return found;
+  }
+  return null;
+}
+
 export const FourMemPlugin: Plugin = async (ctx) => {
   const { directory } = ctx;
   initConfig(directory);
@@ -27,10 +52,10 @@ export const FourMemPlugin: Plugin = async (ctx) => {
 
   const memoryTool = tool({
     description:
-      "Manage persistent project memory. Use 'add' to store knowledge, 'search' to find memories, 'list' to browse, 'forget' to remove, 'diary' to view daily logs.",
+      "Manage persistent project memory. Use 'add' to store knowledge, 'search' to find memories, 'list' to browse, 'forget' to remove, 'diary' to view daily logs, 'get' to fetch full content of one memory by memoryId.",
     args: {
       mode: tool.schema
-        .enum(["add", "search", "list", "forget", "diary", "help"])
+        .enum(["add", "search", "list", "forget", "diary", "get", "help"])
         .optional(),
       content: tool.schema.string().optional(),
       title: tool.schema.string().optional(),
@@ -95,6 +120,7 @@ export const FourMemPlugin: Plugin = async (ctx) => {
                 type: r.entry.type,
                 score: Math.round(r.score * 100),
                 source: r.source,
+                snippet: buildSnippet(r.entry.content),
               })),
             });
           }
@@ -139,6 +165,26 @@ export const FourMemPlugin: Plugin = async (ctx) => {
               success: true,
               dates: dates.slice(0, 30),
             });
+          }
+
+          case "get": {
+            if (!args.memoryId)
+              return JSON.stringify({ success: false, error: "memoryId required" });
+            const found = getMemoryById(args.memoryId, toolCtx.directory);
+            if (found) {
+              return JSON.stringify({
+                success: true,
+                memory: {
+                  id: found.id,
+                  title: found.title,
+                  type: found.type,
+                  date: found.date,
+                  tags: found.tags,
+                  content: found.content,
+                },
+              });
+            }
+            return JSON.stringify({ success: false, error: "not found" });
           }
 
           default:
