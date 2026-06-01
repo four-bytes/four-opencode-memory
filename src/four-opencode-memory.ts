@@ -10,16 +10,18 @@ import pkg from "../package.json";
 
 import type { Plugin } from "@opencode-ai/plugin";
 
-const DEBUG = process.env.CC_DEBUG === "true";
 export function debug(...args: unknown[]): void {
-  if (DEBUG) console.error("[four-mem]", ...args);
+  const msg = args
+    .map((a) => (typeof a === "string" ? a : JSON.stringify(a)))
+    .join(" ");
+  logDebugEvent("debug", { msg });
 }
 
 export const FourMemPlugin: Plugin = async (ctx) => {
   const { directory } = ctx;
   initConfig(directory);
 
-  console.error(`[four-mem] v${pkg.version} loaded`);
+  logDebugEvent("plugin.loaded", { version: pkg.version });
 
   let idleTimeout: ReturnType<typeof setTimeout> | null = null;
 

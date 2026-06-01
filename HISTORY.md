@@ -1,5 +1,10 @@
 # four-opencode-memory-plugin — Change History
 
+## v0.5.1-dev — Unreleased
+
+### Fixed
+- Fix (#17): debug()-Helper schreibt jetzt in JSONL statt Console; ungated 'loaded'-Log entfernt
+
 ## v0.5.0 — 2026-06-01
 
 ### Added
