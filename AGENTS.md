@@ -1,4 +1,4 @@
-# four-opencode-memory-plugin - AGENTS.md
+# @four-bytes/four-opencode-memory - AGENTS.md
 
 ## Project Overview
 - Zero-dependency memory plugin for OpenCode

@@ -1,4 +1,4 @@
-# four-opencode-memory-plugin — Change History
+# @four-bytes/four-opencode-memory — Change History
 
 ## v0.5.1-dev — Unreleased
 

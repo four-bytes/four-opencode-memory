@@ -22,7 +22,7 @@ Add to your OpenCode configuration at `~/.config/opencode/opencode.json`:
 
 ```json
 {
-  "plugin": ["four-opencode-memory-plugin"]
+  "plugin": ["@four-bytes/four-opencode-memory"]
 }
 ```
 
