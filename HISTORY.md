@@ -1,6 +1,14 @@
 # @four-bytes/four-opencode-memory — Change History
 
+## [Unreleased]
+
+### Changed
+- @opencode-ai/plugin: 1.4.3 → 1.15.13
+
 ## v0.5.1-dev — Unreleased
+
+### Changed
+- @opencode-ai/plugin: 1.4.3 → 1.15.13
 
 ### Fixed
 - Fix (#17): debug()-Helper schreibt jetzt in JSONL statt Console; ungated 'loaded'-Log entfernt
