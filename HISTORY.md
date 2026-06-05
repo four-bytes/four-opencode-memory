@@ -11,7 +11,7 @@
 - @opencode-ai/plugin: 1.4.3 → 1.15.13
 
 ### Fixed
-- Fix (#17): debug()-Helper schreibt jetzt in JSONL statt Console; ungated 'loaded'-Log entfernt
+- Fix (#17): debug() helper now writes to JSONL instead of console; removed ungated 'loaded' log
 
 ## v0.5.0 — 2026-06-01
 
@@ -24,25 +24,25 @@
 ## v0.4.0 — 2026-05-31
 
 ### Changed
-- **BREAKING:** Proaktive Memory-Context-Injection in erste User-Message entfernt
-- Memory wird nun ausschließlich on-demand via `memory({ mode: "search" })` Tool abgerufen
-- CONFIG.injection.enabled / injectOn / Felder sind effektiv no-op (Cleanup in späterem PR)
+- **BREAKING:** Proactive memory context injection into first user message removed
+- Memory is now retrieved exclusively on-demand via the `memory({ mode: "search" })` tool
+- CONFIG.injection.enabled / injectOn / fields are effectively no-op (cleanup in later PR)
 
 ### Migration
-- Nutzer die auf Auto-Inject angewiesen sind: explizit `memory({mode:"search",query:"..."})` vor relevanten Tasks aufrufen
+- Users who rely on auto-inject: explicitly call `memory({mode:"search",query:"..."})` before relevant tasks
 
 
 
 ## v0.3.0 — 2026-05-31
 
 ### Changed
-- **BREAKING:** npm-Paket umbenannt: `four-opencode-memory-plugin` → `@four-bytes/four-opencode-memory` (Sprint 0 der opencode-plugins Strategy)
-- **BREAKING:** License gewechselt: MIT → Apache-2.0 (Copyright 2025 Four Bytes bleibt)
-- GitHub-Repo umbenannt: `four-bytes/four-opencode-memory-plugin` → `four-bytes/four-opencode-memory`
+- **BREAKING:** npm package renamed: `four-opencode-memory-plugin` → `@four-bytes/four-opencode-memory` (Sprint 0 of opencode-plugins strategy)
+- **BREAKING:** License changed: MIT → Apache-2.0 (Copyright 2025 Four Bytes remains)
+- GitHub repo renamed: `four-bytes/four-opencode-memory-plugin` → `four-bytes/four-opencode-memory`
 
 ### Migration
-- Nutzer mit `four-opencode-memory-plugin` müssen auf `@four-bytes/four-opencode-memory` umstellen
-- Altes Paket wird auf npm deprecated (separater Schritt)
+- Users with `four-opencode-memory-plugin` must switch to `@four-bytes/four-opencode-memory`
+- Old package will be deprecated on npm (separate step)
 
 
 ## [0.2.2] - 2026-04-12
