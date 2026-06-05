@@ -1,7 +1,6 @@
 import { existsSync } from "node:fs";
 import { tool } from "@opencode-ai/plugin";
 import { initConfig, CONFIG } from "./config.js";
-import { assembleContext } from "./context-assembly.js";
 import { logDebugEvent } from "./debug-logger.js";
 import { performAutoCapture } from "./auto-capture.js";
 import { addMemory, removeMemory, listMemories, parseMemoryFile, memoryPath, projectHash } from "./memory-store.js";
@@ -200,6 +199,7 @@ export const FourMemPlugin: Plugin = async (ctx) => {
     },
   });
 
+  let memoryInstructionSent = false;
   return {
     "chat.message": async (input, output) => {
       logDebugEvent("chat.message", {
@@ -260,7 +260,6 @@ export const FourMemPlugin: Plugin = async (ctx) => {
       }
 
       // Context injection removed — memories are now on-demand via memory({mode:"search"}).
-      // (Previously pushed assembleContext() into every first user message.)
     },
 
     event: async (input) => {
@@ -293,7 +292,10 @@ export const FourMemPlugin: Plugin = async (ctx) => {
       logDebugEvent("system.transform", {
         systemLenBefore: output.system.length,
       });
-      output.system.push(`memory tool: search before recall queries; store ONLY when user explicitly says "remember/merk dir/save". Modes: add, search, list, forget, diary. scope:"global" for cross-project.`);
+      if (!memoryInstructionSent) {
+        output.system.push(`memory tool: search before recall queries; store ONLY when user explicitly says "remember/merk dir/save". Modes: add, search, list, forget, diary. scope:"global" for cross-project.`);
+        memoryInstructionSent = true;
+      }
     },
 
     tool: {
