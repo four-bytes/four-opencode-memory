@@ -45,7 +45,7 @@ async function readFileSafe(path: string): Promise<string> {
   } catch (error: any) {
     if (error.code === "ENOENT") return "";
     if (error.code === "EIO") {
-      debug(`EIO-Fehler beim Lesen von ${path}: ${error.message}`);
+      debug(`EIO error reading ${path}: ${error.message}`);
       return "";
     }
     throw error;
@@ -76,21 +76,6 @@ export async function appendDiary(title: string, content: string): Promise<void>
 export async function readDiary(date: string): Promise<string> {
   const path = diaryPath(date);
   return readFileSafe(path);
-}
-
-export async function readRecentDiary(daysBack: number): Promise<string> {
-  await ensureDiaryDirAsync();
-  const parts: string[] = [];
-  for (let i = 0; i <= daysBack; i++) {
-    const d = new Date();
-    d.setDate(d.getDate() - i);
-    const mm = String(d.getMonth() + 1).padStart(2, "0");
-    const dd = String(d.getDate()).padStart(2, "0");
-    const dateStr = `${d.getFullYear()}-${mm}-${dd}`;
-    const content = await readDiary(dateStr);
-    if (content) parts.push(content);
-  }
-  return parts.length ? "\n" + parts.join("\n") : "";
 }
 
 export async function listDiaryDates(): Promise<string[]> {

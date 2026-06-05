@@ -65,12 +65,12 @@ function writeProjectMemory(): void {
 const ORIG_STORAGE_PATH = CONFIG.storagePath;
 
 describe("buildSnippet", () => {
-  it("returns full content when ≤ 300 chars", () => {
+  it("returns full content when ≤ 150 chars", () => {
     expect(buildSnippet(SHORT)).toBe(SHORT);
   });
 
-  it("returns content as-is when exactly 300 chars", () => {
-    const exact = "x".repeat(300);
+  it("returns content as-is when exactly 150 chars", () => {
+    const exact = "x".repeat(150);
     expect(buildSnippet(exact)).toBe(exact);
   });
 
@@ -94,7 +94,7 @@ describe("buildSnippet", () => {
 
   it("handles content without whitespace >max", () => {
     const r = buildSnippet("a".repeat(400));
-    expect(r.length).toBe(300);
+    expect(r.length).toBe(150);
     expect(r.endsWith("…")).toBe(true);
     expect(r.startsWith("aaa")).toBe(true);
   });

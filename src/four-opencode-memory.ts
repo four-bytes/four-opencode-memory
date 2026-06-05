@@ -18,7 +18,7 @@ export function debug(...args: unknown[]): void {
   logDebugEvent("debug", { msg });
 }
 
-export function buildSnippet(content: string, max: number = 300): string {
+export function buildSnippet(content: string, max: number = 150): string {
   if (content.length <= max) return content;
   const sliced = content.slice(0, max - 1);
   const wordCut = sliced.replace(/\s+\S*$/, "");
@@ -293,7 +293,7 @@ export const FourMemPlugin: Plugin = async (ctx) => {
         systemLenBefore: output.system.length,
       });
       if (!memoryInstructionSent) {
-        output.system.push(`memory tool: search before recall queries; store ONLY when user explicitly says "remember/merk dir/save". Modes: add, search, list, forget, diary. scope:"global" for cross-project.`);
+        output.system.push(`memory tool — modes: add, search, list, forget, diary.`);
         memoryInstructionSent = true;
       }
     },

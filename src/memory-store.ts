@@ -29,12 +29,12 @@ export function memoryPath(projectDir?: string): string {
     ? join(CONFIG.storagePath, "projects", projectHash(projectDir), "MEMORY.md")
     : join(CONFIG.storagePath, "MEMORY.md");
 
-  debug(`Lese Memory-Datei: ${primaryPath}`);
+  debug(`Reading memory file: ${primaryPath}`);
 
   if (CONFIG.fallbackPaths) {
     for (const fallback of CONFIG.fallbackPaths) {
       if (existsSync(fallback)) {
-        debug(`Verwende Fallback-Pfad: ${fallback}`);
+        debug(`Using fallback path: ${fallback}`);
         return fallback;
       }
     }
@@ -44,10 +44,10 @@ export function memoryPath(projectDir?: string): string {
 }
 
 export function parseMemoryFile(filePath: string): MemoryEntry[] {
-  debug(`Parse Memory-Datei: ${filePath}`);
+  debug(`Parsing memory file: ${filePath}`);
 
   if (!existsSync(filePath)) {
-    debug(`Datei nicht gefunden: ${filePath}`);
+    debug(`File not found: ${filePath}`);
     return [];
   }
 
@@ -55,9 +55,9 @@ export function parseMemoryFile(filePath: string): MemoryEntry[] {
   try {
     raw = readFileSync(filePath, "utf-8");
   } catch (error: any) {
-    debug(`Fehler beim Lesen von ${filePath}: ${(error as Error).message}`);
+    debug(`Error reading ${filePath}: ${(error as Error).message}`);
     if (error.code === "EIO") {
-      debug(`EIO-Fehler beim Lesen von ${filePath}: ${error.message}`);
+        debug(`EIO error reading ${filePath}: ${error.message}`);
       return [];
     }
     throw error;
@@ -125,15 +125,15 @@ async function readFileSafe(filePath: string, encoding: BufferEncoding): Promise
     } catch (error: any) {
       if (error.code === "EBUSY" || error.code === "EAGAIN") {
         if (attempt < MAX_RETRIES) {
-          debug(`Datei busy, Versuch ${attempt}/${MAX_RETRIES}: ${filePath}`);
+          debug(`File busy, attempt ${attempt}/${MAX_RETRIES}: ${filePath}`);
           await sleep(10 * attempt);
           continue;
         }
-        debug(`Busy nach ${MAX_RETRIES} Versuchen: ${filePath}`);
+        debug(`Busy after ${MAX_RETRIES} attempts: ${filePath}`);
         return "";
       }
       if (error.code === "EIO") {
-        debug(`EIO-Fehler beim Lesen von ${filePath}: ${error.message}`);
+      debug(`EIO error reading ${filePath}: ${error.message}`);
         return "";
       }
       if (error.code === "ENOENT") {

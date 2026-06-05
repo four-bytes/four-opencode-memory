@@ -97,7 +97,4 @@ export async function performAutoCapture(
   }
 }
 
-// Reset captured sessions (for testing)
-export function resetCapturedSessions(): void {
-  capturedSessions.clear();
-}
+
