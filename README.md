@@ -1,5 +1,9 @@
 # @four-bytes/four-opencode-memory
 
+[![npm](https://img.shields.io/npm/v/@four-bytes/four-opencode-memory)](https://www.npmjs.com/package/@four-bytes/four-opencode-memory)
+[![license](https://img.shields.io/badge/license-Apache%202.0-blue)](LICENSE)
+[![bun](https://img.shields.io/badge/runtime-bun-orange)](https://bun.sh)
+
 Zero-dependency memory plugin for [OpenCode](https://opencode.ai) — persistent AI memory using plain Markdown files.
 
 ## Why
@@ -164,3 +168,7 @@ Inspired by [OpenClaw's memory architecture](https://docs.openclaw.ai/concepts/m
 ## License
 
 MIT
+
+---
+
+> If this plugin saves you tokens, consider leaving a ⭐ on [GitHub](https://github.com/four-bytes/four-opencode-memory).
