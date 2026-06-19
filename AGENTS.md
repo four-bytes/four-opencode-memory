@@ -34,3 +34,4 @@
 - No external runtime dependencies — only Bun/Node built-ins
 - All data stored as human-readable Markdown
 - LF line endings, real umlauts
+- **Console logging:** Plugins MUST use `_client?.app?.log()` for all logging in plugin mode — `console.log` / `console.warn` / `console.error` is ONLY permitted for the initial startup `"init"` message. Console output in plugin mode breaks the terminal UI.
