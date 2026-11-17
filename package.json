@@ -1,6 +1,6 @@
 {
   "name": "@four-bytes/four-opencode-memory",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "description": "Zero-dependency memory plugin for OpenCode — persistent AI memory using Markdown files",
   "type": "module",
   "main": "dist/four-opencode-memory.js",
@@ -12,6 +12,7 @@
     }
   },
   "scripts": {
+    "postinstall": "bun run build",
     "build": "bun build src/four-opencode-memory.ts --outdir dist --target bun --format esm",
     "dev": "bun build src/four-opencode-memory.ts --outdir dist --target bun --format esm --watch",
     "typecheck": "bunx tsc --noEmit",
